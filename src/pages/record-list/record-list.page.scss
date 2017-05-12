@@ -1,0 +1,76 @@
+record-list {
+  ion-list {
+    .accordionItem {
+      background-color: transparent;
+      position: relative;
+      margin-bottom: 1px;
+      >.item-inner {
+        padding-right: 0px !important;
+        border: 0 !important;
+        >.input-wrapper>ion-label {
+          margin: 0;
+        }
+      }
+    }
+    .accordionDetail {
+      text-transform: none;
+      white-space: normal;
+      text-align: justify;
+      margin: 1px;
+    }
+    .accordionTitle {
+      padding-left: 2px;
+      padding-top: 1em;
+      padding-bottom: 1em;
+    }
+    .activeTitle {
+      background-color: #777777;
+    }
+    .inactiveTitle {
+      background-color: #dedede;
+    }
+    ion-row {
+      border-bottom: 1px solid #dedede !important;
+      margin-bottom: 1px;
+      .dateColumn {
+        flex: 0;
+        flex-basis: 30px;
+        border-right: 1px solid #dedede;
+        >ion-item>.item-inner {
+          border: 0 !important;
+          padding: 0 !important;
+          >.input-wrapper>ion-label {
+            margin: 0;
+            padding-left: 4px;
+            padding-right: 4px;
+            .dayOfMonth {
+              font-size: 1.2em;
+            }
+            .week {
+              font-size: 0.5em;
+              color: #777777;
+            }
+          }
+        }
+      }
+      .mrColumn {
+        .recordlist {
+          margin-bottom: 0;
+          ion-item-sliding:last-child>.lPadingCloser {
+            border-bottom: 0 !important;
+          }
+          .lPadingCloser {
+            padding-left: 2px;
+            border-bottom: 1px solid #dedede;
+            >.item-inner {
+              border: 0;
+            }
+            ion-icon[item-left]+.item-inner {
+              margin-left: 1px !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}

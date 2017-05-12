@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>编辑</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-list-header>
+      流入：100 流出：55 总额：450
+    </ion-list-header>
+    <ion-item no-padding class="accordionItem" *ngFor="let monthRecord of monthArray">
+      <div [ngClass]="{'activeTitle':monthRecord.showDetails,'inactiveTitle':!monthRecord.showDetails}" class="accordionTitle"
+        (click)="toggleRecordDetails(monthRecord)">
+        {{monthRecord.monthTitle}}
+      </div>
+      <div class="accordionDetail" *ngIf="monthRecord.showDetails">
+        <ion-grid no-padding>
+          <ion-row *ngFor="let dayRecord of monthRecord.details">
+            <ion-col no-padding col-1 class="dateColumn">
+              <ion-item no-padding>
+                <div class="dayOfMonth">
+                  {{dayRecord[0].date | formateFromISO : 'day'}}
+                </div>
+                <div class="week">
+                  {{dayRecord[0].date | formateFromISO : 'Week'}}
+                </div>
+              </ion-item>
+            </ion-col>
+            <ion-col no-padding col-11 class="mrColumn">
+              <ion-list class="recordlist" no-padding>
+                <ion-item-sliding *ngFor="let moneyRecord of dayRecord; let i = index">
+                  <ion-item class="lPadingCloser" (click)="recordTapped($event, moneyRecord)">
+                    <ion-icon name="beer" item-left></ion-icon>
+                    <ion-label>{{moneyRecord.subtype}}</ion-label>
+                    <div item-right>
+                      ¥{{moneyRecord.money}}
+                    </div>
+                  </ion-item>
+                  <ion-item-options side="right">
+                    <button ion-button color="danger" (click)="deleteRecord(i, dayRecord)">
+                        <ion-icon name="trash"></ion-icon>删除
+                      </button>
+                  </ion-item-options>
+                </ion-item-sliding>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </ion-item>
+  </ion-list>
+
+
+
+
+  <div *ngIf="msg" padding>
+    {{msg}}
+  </div>
+</ion-content>

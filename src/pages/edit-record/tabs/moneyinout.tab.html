@@ -1,0 +1,81 @@
+<ion-header *ngIf="ifEditRecord">
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>编辑</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-grid>
+    <ion-row *ngIf="ifEditRecord">
+      <ion-col>
+        <ion-item text-center tappable>
+          {{moneyRecord.direction}}
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item text-right tappable (click)="editMoney($event,moneyRecord.money)">
+          {{moneyRecord.money}}
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label>类别：</ion-label>
+          <ion-multi-picker id="recordType" item-content [multiPickerColumns]="recordTypeColumns" [(ngModel)]="moneyRecord._alltype"></ion-multi-picker>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-item>
+        <ion-label>账户：</ion-label>
+        <ion-multi-picker id="recordAccount" item-content [multiPickerColumns]="recordAccountColumns" [(ngModel)]="moneyRecord.account"></ion-multi-picker>
+      </ion-item>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label>日期</ion-label>
+          <ion-datetime displayFormat="YYYY年-MM月-DD日 HH:mm" min="2000" max="2100" [(ngModel)]="moneyRecord.date"></ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label>备注</ion-label>
+          <ion-textarea [(ngModel)]="moneyRecord.comment">
+          </ion-textarea>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <button ion-button (click)="alertValue()">查看值</button>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <button ion-button (click)="save()">保存</button>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <button ion-button (click)="getRecordList()">查看列表</button>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item text-wrap style="height: 300px">
+          {{logtext}}
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

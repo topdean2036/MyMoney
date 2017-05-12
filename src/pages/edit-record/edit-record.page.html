@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>编辑</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-tabs #editRecordTabs selectedIndex="0" tabsPlacement="top">
+    <ion-tab [root]="tabOutRoot" tabTitle="支出" (ionSelect)="selectOutTab()" [rootParams]="{'direction': '支出'}"></ion-tab>
+    <ion-tab [root]="tabInRoot" tabTitle="收入" (ionSelect)="selectInTab()" [rootParams]="{'direction': '收入'}"></ion-tab>
+    <ion-tab [root]="tabTransferRoot" tabTitle="转账" (ionSelect)="selectTransferTab()"></ion-tab>
+  </ion-tabs>
+</ion-content>
