@@ -1,3 +1,4 @@
+import { GlobalService } from './../../service/global.service';
 import { MoneyTransferTab } from './../edit-record/tabs/moneytransfer.tab';
 import { MoneyInOutTab } from './../edit-record/tabs/moneyinout.tab';
 import { RecordService } from './../../service/record.service';
@@ -11,63 +12,85 @@ import { NavController } from 'ionic-angular';
   templateUrl: 'record-list.page.html'
 })
 export class RecordListPage implements OnInit {
-  selectedRecord: any;
-  dayRecords: any[];
+  // selectedRecord: any;
+  // dayRecords: any[];
   msg: string;
+  //选择查询年份
+  selectedYear: string;
+  //选择查询月份对应的资金流水
+  selectedMonthRecord: Array<{ date: string, dayRecord: MoneyRecord[] }>;
 
-  //月数组
-  monthArray: Array<{ monthTitle: string, details: any[], showDetails: boolean }> = [];
+  //月份数据数组
+  monthArray: Array<{ month: string, monthTitle: string, showDetails: boolean }> = [];
+  //日数据数组
+  dayArray: Array<{ day: string, moneyRecords: MoneyRecord[] }> = [];
 
-  constructor(public navCtrl: NavController, public recordService: RecordService) {
+  constructor(public navCtrl: NavController, public recordService: RecordService, public global: GlobalService) {
 
   }
 
 
   ngOnInit(): void {
+    //获取当前查询年份：
+    this.selectedYear = (new Date()).getFullYear().toString();
+
     //获取资金记录的月份合计
-    this.recordService.getRecordListMonthSum((new Date()).getFullYear().toString()).then(
+    this.recordService.getRecordListMonthSum(this.selectedYear).then(
       (data) => {
-        alert(data);
         if (data.rows.length > 0) {
-          for (var i = 0; i < data.rows.length; i++) {
+          for (let i = 0; i < data.rows.length; i++) {
             this.monthArray.push({
+              month: data.rows.item(i).month,
               monthTitle: data.rows.item(i).month + "月    收入：" + data.rows.item(i).moneyIn + "   支出：" + data.rows.item(i).moneyOut,
-              details: [],
               showDetails: false
             });
           }
         }
       }
-    ).catch(error => this.msg = JSON.stringify(error));
-
-    // this.recordService.getRecordList().then(
-    //   (date) => {
-    //     this.dayRecords = date;
-    //     this.monthArray.push({
-    //       monthTitle: '1月    收入：100   支出：150',
-    //       details: this.dayRecords,
-    //       showDetails: false
-    //     });
-    //     this.monthArray.push({
-    //       monthTitle: '2月   收入：110   支出：160',
-    //       details: this.dayRecords,
-    //       showDetails: false
-    //     });
-    //     this.monthArray.push({
-    //       monthTitle: '3月   收入：120   支出：170',
-    //       details: this.dayRecords,
-    //       showDetails: false
-    //     });
-    //   }
-    // ).catch(error => this.msg = JSON.stringify(error));
+    ).catch(error => {
+      this.msg = JSON.stringify(error);
+      alert("error:" + this.msg);
+    });
   }
 
   //展开、收回记录列表
-  toggleRecordDetails(arr) {
-    if (arr.showDetails) {
-      arr.showDetails = false;
+  toggleRecordDetails(selectedMonthRecord) {
+    if (selectedMonthRecord.showDetails) {
+      this.selectedMonthRecord = [];
+      selectedMonthRecord.showDetails = false;
     } else {
-      arr.showDetails = true;
+      this.selectedMonthRecord = [];
+      //循环月份列表，收回所有流水列表，保证只有一个月份的流水列表处于展开状态
+      for (let i = 0; i < this.monthArray.length; i++) {
+        let monthRecord = this.monthArray[i];
+        monthRecord.showDetails = false;
+      }
+
+      //查询展开月份的资金流水
+      this.recordService.getRecordListByMonth(this.selectedYear + '-' + selectedMonthRecord.month).then(
+        (data) => {
+          let dayMoneyRecords: MoneyRecord[] = [];
+          //重新组织数据
+          if (data.rows.length > 0) {
+            let day: any;
+            for (var i = 0; i < data.rows.length; i++) {
+              let mr = this.global.itemToMoneyRecord(data.rows.item(i));
+              if (data.rows.item(i).day == day) {
+                dayMoneyRecords.push(mr);
+              } else {
+                day = data.rows.item(i).day;
+                dayMoneyRecords = [];
+                dayMoneyRecords.push(mr);
+                this.selectedMonthRecord.push({
+                  date: data.rows.item(i).date,
+                  dayRecord: dayMoneyRecords
+                });
+              }
+            }
+          }
+        });
+      //展开列表
+      selectedMonthRecord.showDetails = true;
     }
   }
 

@@ -49,9 +49,21 @@ export class RecordService {
     return this.dbService.execSql(sql, params);
   }
 
-  //TODO 需要合计月份的流入、流出
+  //需要合计月份的流入、流出
   getRecordListMonthSum(year: string): Promise<any>{
-    let sql = "SELECT MAX(SUBSTR(date,5,2)) AS month,100 AS moneyIn,200 AS money Out FROM money_record WHERE date LIKE " + year + "-% GROUP BY SUBSTR(date,0,7) ORDER BY SUBSTR(date,0,7) DESC";
+    let moneyInSql = "SUM(CASE direction WHEN '收入' THEN money ELSE 0 END) AS moneyIn, ";
+    let moneyOutSql = "SUM(CASE direction WHEN '支出' THEN money ELSE 0 END) AS moneyOut ";
+
+    let sql = "SELECT MAX(SUBSTR(date,6,2)) AS month, " + moneyInSql + moneyOutSql +
+      " FROM money_record WHERE date LIKE '" + year + "%' GROUP BY SUBSTR(date,1,7) ORDER BY SUBSTR(date,1,7) DESC";
+
+    let params = [];
+    return this.dbService.execSql(sql, params);
+  }
+
+  //根据年月查询资金流水
+  getRecordListByMonth(yearmonth: string): Promise<any>{
+    let sql = "SELECT id,direction,money,type,subtype,account,date,comment,SUBSTR(date,9,2) as day FROM money_record WHERE date LIKE '" + yearmonth + "%'";
     let params = [];
     return this.dbService.execSql(sql, params);
   }
@@ -63,7 +75,7 @@ export class RecordService {
       return this.dbService.execSql(sql).then((data) => {
           if (data.rows.length > 0) {
               for (var i = 0; i < data.rows.length; i++) {
-                  let mr = this.itemToMoneyRecord(data.rows.item(i));
+                  let mr = this.global.itemToMoneyRecord(data.rows.item(i));
                   rs.push(mr);
               }
           }
@@ -132,23 +144,6 @@ export class RecordService {
     resultList.push(dayRecordList1);
 
     return Promise.resolve(resultList);
-  }
-
-  /**把sql查询结果放入对象 */
-  private itemToMoneyRecord(item: any): MoneyRecord {
-
-    let mr = new MoneyRecord();
-    mr.id = item.id;
-    mr.direction = item.direction;
-    mr.money = item.money;
-    mr.type = item.type;
-    mr.subtype = item.subtype;
-    mr.account = item.account;
-    mr.date = item.date;
-    mr.comment = item.comment;
-    mr._alltype = mr.type + " " + mr.subtype;
-
-    return mr;
   }
 
   getRecord(): Promise<MoneyRecord> {

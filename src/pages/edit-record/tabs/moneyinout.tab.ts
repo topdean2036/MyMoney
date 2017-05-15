@@ -37,23 +37,51 @@ export class MoneyInOutTab implements OnInit {
   }
 
   ngOnInit(): void {
+    // Promise.resolve().then((data) => {
+    //   //判断是否新增记录，新增时根据资金方向初始化记录
+    //   if (this.moneyRecord == null) {
+    //     this.ifEditRecord = false;
+    //     this.direction = "支出";
+
+    //     this.moneyRecord = new MoneyRecord();
+    //     this.recordService.getRecordByDirection(this.direction).then(record => (this.moneyRecord = record));
+    //   } else {
+    //     alert(JSON.stringify(this.moneyRecord));
+    //     //修改记录时，根据传入的资金记录初始化响应参数
+    //     this.ifEditRecord = true;
+    //     this.direction = this.moneyRecord.direction;
+    //   }
+    // }).then(() => {
+    //   return this.customsettingService.getRecordTypeColumns(this.direction);
+    // }).then((data) => {
+    //   this.recordTypeColumns = data;
+    //   //获取账户
+    //   return this.customsettingService.getRecordAccountColumns();
+    // }).then((data) => {
+    //   this.recordAccountColumns = data;
+    // }).then(() => {
+    //   return Promise.resolve(alert(this.recordAccountColumns));
+    // });
+
+
     //判断是否新增记录，新增时根据资金方向初始化记录
     if (this.moneyRecord == null) {
       this.ifEditRecord = false;
+      this.direction = "支出";
 
       this.moneyRecord = new MoneyRecord();
       this.recordService.getRecordByDirection(this.direction).then(record => (this.moneyRecord = record));
     } else {
+      alert(JSON.stringify(this.moneyRecord));
       //修改记录时，根据传入的资金记录初始化响应参数
       this.ifEditRecord = true;
       this.direction = this.moneyRecord.direction;
     }
 
     //获取资金类别
-    this.customsettingService.getRecordTypeColumns(this.direction).then(data => (this.recordTypeColumns = data));
-      alert();
+    this.recordTypeColumns = this.customsettingService.getRecordTypeColumns(this.direction);
     //获取账户
-    this.customsettingService.getRecordAccountColumns().then(data => (this.recordAccountColumns = data));
+    this.recordAccountColumns = this.customsettingService.getRecordAccountColumns();
   }
 
   //处理切换tab时的逻辑（实际上编译记录时没有切换tab页面的操作）

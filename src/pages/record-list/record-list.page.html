@@ -9,7 +9,7 @@
 <ion-content>
   <ion-list>
     <ion-list-header>
-      流入：100 流出：55 总额：450
+      查询年份：{{presentYear}}流入：xx 流出：xx 总额：xx
     </ion-list-header>
     <ion-item no-padding class="accordionItem" *ngFor="let monthRecord of monthArray">
       <div [ngClass]="{'activeTitle':monthRecord.showDetails,'inactiveTitle':!monthRecord.showDetails}" class="accordionTitle"
@@ -18,24 +18,24 @@
       </div>
       <div class="accordionDetail" *ngIf="monthRecord.showDetails">
         <ion-grid no-padding>
-          <ion-row *ngFor="let dayRecord of monthRecord.details">
+          <ion-row *ngFor="let dayRecord of selectedMonthRecord">
             <ion-col no-padding col-1 class="dateColumn">
               <ion-item no-padding>
                 <div class="dayOfMonth">
-                  {{dayRecord[0].date | formateFromISO : 'day'}}
+                  {{dayRecord.date | formateFromISO : 'day'}}
                 </div>
                 <div class="week">
-                  {{dayRecord[0].date | formateFromISO : 'Week'}}
+                  {{dayRecord.date | formateFromISO : 'Week'}}
                 </div>
               </ion-item>
             </ion-col>
             <ion-col no-padding col-11 class="mrColumn">
               <ion-list class="recordlist" no-padding>
-                <ion-item-sliding *ngFor="let moneyRecord of dayRecord; let i = index">
+                <ion-item-sliding *ngFor="let moneyRecord of dayRecord.dayRecord; let i = index">
                   <ion-item class="lPadingCloser" (click)="recordTapped($event, moneyRecord)">
                     <ion-icon name="beer" item-left></ion-icon>
                     <ion-label>{{moneyRecord.subtype}}</ion-label>
-                    <div item-right>
+                    <div item-right [ngClass]="{'inMoneyColor':moneyRecord.direction=='收入','outMoneyColor':moneyRecord.direction=='支出'}">
                       ¥{{moneyRecord.money}}
                     </div>
                   </ion-item>

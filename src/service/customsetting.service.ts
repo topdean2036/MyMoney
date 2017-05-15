@@ -12,7 +12,7 @@ export class CustomsettingService {
   }
 
   //TODO 获取资金类别。需要做成动态查询
-  getRecordTypeColumns(direction: string): Promise<any[]> {
+  getRecordTypeColumns(direction: string): any[] {
     let recordTypeColumns: any[];
     if(direction == "支出"){
       recordTypeColumns = [
@@ -56,11 +56,11 @@ export class CustomsettingService {
 
       ];
     }
-    return Promise.resolve(recordTypeColumns);
+    return recordTypeColumns;
   }
 
   //TODO 获取账户。需要做成动态查询
-  getRecordAccountColumns(): Promise<any[]> {
+  getRecordAccountColumns(): any[] {
     let recordAccountColumns = [{
       name: 'account',
       options: [
@@ -75,8 +75,6 @@ export class CustomsettingService {
         { text: 'FT余额', value: 'FT余额' },
         { text: '应收', value: '应收' }]
     }];
-    return Promise.resolve(recordAccountColumns);
+    return recordAccountColumns;
   }
-
-
 }
