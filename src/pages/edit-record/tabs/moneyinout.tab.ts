@@ -33,46 +33,17 @@ export class MoneyInOutTab implements OnInit {
 
     //从新增页面导航过来时，获取tabs里面的参数，判断收入支出。只能用data的方式过去，直接get不到数据
     this.direction = navParams.data.direction;
-    // alert(this.direction);
   }
 
   ngOnInit(): void {
-    // Promise.resolve().then((data) => {
-    //   //判断是否新增记录，新增时根据资金方向初始化记录
-    //   if (this.moneyRecord == null) {
-    //     this.ifEditRecord = false;
-    //     this.direction = "支出";
-
-    //     this.moneyRecord = new MoneyRecord();
-    //     this.recordService.getRecordByDirection(this.direction).then(record => (this.moneyRecord = record));
-    //   } else {
-    //     alert(JSON.stringify(this.moneyRecord));
-    //     //修改记录时，根据传入的资金记录初始化响应参数
-    //     this.ifEditRecord = true;
-    //     this.direction = this.moneyRecord.direction;
-    //   }
-    // }).then(() => {
-    //   return this.customsettingService.getRecordTypeColumns(this.direction);
-    // }).then((data) => {
-    //   this.recordTypeColumns = data;
-    //   //获取账户
-    //   return this.customsettingService.getRecordAccountColumns();
-    // }).then((data) => {
-    //   this.recordAccountColumns = data;
-    // }).then(() => {
-    //   return Promise.resolve(alert(this.recordAccountColumns));
-    // });
-
-
     //判断是否新增记录，新增时根据资金方向初始化记录
     if (this.moneyRecord == null) {
       this.ifEditRecord = false;
-      this.direction = "支出";
 
       this.moneyRecord = new MoneyRecord();
       this.recordService.getRecordByDirection(this.direction).then(record => (this.moneyRecord = record));
     } else {
-      alert(JSON.stringify(this.moneyRecord));
+      // alert(JSON.stringify(this.moneyRecord));
       //修改记录时，根据传入的资金记录初始化响应参数
       this.ifEditRecord = true;
       this.direction = this.moneyRecord.direction;
@@ -88,6 +59,10 @@ export class MoneyInOutTab implements OnInit {
   ionViewDidEnter() {
     //新增记录切换tab页时，重新生成新记录
     if (!this.ifEditRecord) {
+      alert(this.direction);
+      //获取资金类别
+      this.recordTypeColumns = this.customsettingService.getRecordTypeColumns(this.direction);
+
       this.recordService.getRecordByDirection(this.direction).then(record => (this.moneyRecord = record));
     }
   }
