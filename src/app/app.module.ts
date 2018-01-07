@@ -9,6 +9,7 @@ import { RecordService } from './../service/record.service';
 import { NgModule, ErrorHandler, Pipe } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { BrowserModule } from '@angular/platform-browser';
 
 import { MyApp } from './app.component';
 
@@ -37,6 +38,7 @@ import { MultiPicker } from '../components/multi-picker/multi-picker';
   ],
   imports: [
     FormsModule,
+    BrowserModule,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],

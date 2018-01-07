@@ -76,7 +76,7 @@ export class MultiPicker implements AfterContentInit, ControlValueAccessor, OnDe
   @Output() ionCancel: EventEmitter<any> = new EventEmitter();
 
   constructor(private _form: Form, @Optional() private _item: Item, @Optional() private _pickerCtrl: PickerController) {
-    this._form.register(this);
+    //this._form.register(this);
     if (_item) {
       this.id = 'dt-' + _item.registerInput('multi-picker');
       this._labelId = 'lbl-' + _item.id;
@@ -438,7 +438,7 @@ export class MultiPicker implements AfterContentInit, ControlValueAccessor, OnDe
   * @private
   */
   ngOnDestroy() {
-    this._form.deregister(this);
+    //this._form.deregister(this);
   }
 
   /**
