@@ -12,7 +12,7 @@ export class RecordService {
   }
 
   //TODO 初始化资金记录表
-  initMoneyRecord(): void {
+  initMoneyRecord() {
     let sql = "CREATE TABLE IF NOT EXISTS money_record ("
       + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
       + "direction TEXT,"

@@ -1,24 +1,20 @@
-import { SQLite } from 'ionic-native';
-import { Platform } from 'ionic-angular';
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Injectable } from '@angular/core';
 
 @Injectable()
 export class DatabaseService {
 
-  public db: SQLite;
+  public db: SQLiteObject;
   public dbname: string = 'mymoney.db';
 
-  constructor(private platform: Platform) { }
+  constructor(public sqlite: SQLite) { }
 
-  init(): Promise<any> {
-    this.db = new SQLite();
-    return this.db.openDatabase({ name: this.dbname, location: 'default' })
-      .catch(error => { Error('Error opening database' + error) });
+  async init() {
+    await this.sqlite.create({ name: this.dbname, location: 'default' });
   }
 
-  execSql(querySQL: string, params?: any): Promise<any> {
+  async execSql(querySQL: string, params?: any): Promise<any> {
     params = params || [];
-    return this.db.executeSql(querySQL, params)
-      .catch(error => { Error('Unable to execute sql' + error) });
+    return await this.db.executeSql(querySQL, params);
   }
 }

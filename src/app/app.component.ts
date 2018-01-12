@@ -6,7 +6,8 @@ import { Component, ViewChild } from '@angular/core';
 
 import { Platform, MenuController, Nav } from 'ionic-angular';
 
-import { StatusBar, Splashscreen } from 'ionic-native';
+//import { StatusBar} from '@ionic-native/status-bar';
+//import { Splashscreen } from '@ionic-native/splash-screen';
 
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { ListPage } from '../pages/list/list';
@@ -26,7 +27,6 @@ export class MyApp {
   constructor(public platform: Platform, public menu: MenuController, public dbService: DatabaseService,
     public recordService: RecordService) {
     this.initializeApp();
-
     // set our app's pages
     this.pages = [
       { title: 'Hello Ionic', component: HelloIonicPage },
@@ -37,16 +37,26 @@ export class MyApp {
     ];
   }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
+  /**
+   * 初始化app
+   */
+  async initializeApp() {
+    try {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      StatusBar.styleDefault();
-      Splashscreen.hide();
+      await this.platform.ready();
+
+      //StatusBar.styleDefault();
+      //Splashscreen.hide();
 
       //初始化数据库、资金记录表
-      this.dbService.init().then(() => { return this.recordService.initMoneyRecord() });
-    });
+      await this.dbService.init();
+      //初始化资金记录表
+      await this.recordService.initMoneyRecord();
+    } catch (error) {
+      console.log(error);
+      return;
+    }
   }
 
   openPage(page) {
