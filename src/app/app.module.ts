@@ -23,7 +23,7 @@ import { EditMoneyPopover } from './../pages/edit-record/popover/edit-money.popo
 import { MoneyInOutTab } from './../pages/edit-record/tabs//moneyinout.tab';
 import { MoneyTransferTab } from './../pages/edit-record/tabs//moneytransfer.tab';
 
-import { MultiPicker } from '../components/multi-picker/multi-picker';
+import { MultiPickerModule } from 'ion-multi-picker';
 
 @NgModule({
   declarations: [
@@ -34,12 +34,12 @@ import { MultiPicker } from '../components/multi-picker/multi-picker';
     AccordionPage,
     EditRecordPage, EditMoneyPopover, RecordListPage,
     MoneyInOutTab, MoneyTransferTab,
-    MultiPicker,
     FormateFromISOPipe
   ],
   imports: [
     FormsModule,
     BrowserModule,
+    MultiPickerModule,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
@@ -50,8 +50,7 @@ import { MultiPicker } from '../components/multi-picker/multi-picker';
     ListPage,
     AccordionPage,
     EditRecordPage, EditMoneyPopover, RecordListPage,
-    MoneyInOutTab, MoneyTransferTab,
-    MultiPicker
+    MoneyInOutTab, MoneyTransferTab
   ],
   providers: [
     { provide: ErrorHandler, useClass: IonicErrorHandler },
