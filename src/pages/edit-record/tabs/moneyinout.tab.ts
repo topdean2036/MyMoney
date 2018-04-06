@@ -3,7 +3,7 @@ import { EditMoneyPopover } from './../popover/edit-money.popover';
 import { RecordService } from './../../../service/record.service';
 import { MoneyRecord } from './../../../vo/money-record';
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ModalController, PopoverController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, PopoverController, ToastController } from 'ionic-angular';
 
 @Component({
   templateUrl: 'moneyinout.tab.html'
@@ -20,14 +20,14 @@ export class MoneyInOutTab implements OnInit {
   recordAccountColumns: any[] = [];
 
   rs: MoneyRecord[] = [];
-  logtext: string = "111";
-
-
+  //TODO 测试代码，需要删除
+  logtext: string = "显示更新记录";
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public modalCtrl: ModalController, public popoverCtrl: PopoverController,
-    public recordService: RecordService, public customsettingService: CustomsettingService) {
-    //如果是编译记录，会获取到资金记录，新增记录时不会邮
+    public recordService: RecordService, public customsettingService: CustomsettingService,
+    public toastCtrl: ToastController) {
+    //如果是编译记录，会获取到资金记录，新增记录时不会有
     this.moneyRecord = navParams.get('moneyRecord');
     // alert(JSON.stringify(navParams.get('moneyRecord')));
 
@@ -88,17 +88,27 @@ export class MoneyInOutTab implements OnInit {
     if (this.ifEditRecord) {
       //TODO 编辑
       this.recordService.editRecord(this.moneyRecord).then(
+        //TODO
         (data) => {
+          this.presentToast("成功");
           this.logtext = JSON.stringify(data);
         }
-      ).catch(error => this.logtext = JSON.stringify(error));
+      ).catch(error => {
+        this.presentToast("失败");
+        this.logtext = JSON.stringify(error)
+      });
     } else {
       //新增
       this.recordService.addRecord(this.moneyRecord).then(
+        //TODO
         (data) => {
+          this.presentToast("成功");
           this.logtext = JSON.stringify(data);
         }
-      ).catch(error => this.logtext = JSON.stringify(error));
+      ).catch(error => {
+        this.presentToast("失败");
+        this.logtext = JSON.stringify(error);
+      });
     }
 
     //新增记录完成时，刷新金额、备注字段，为新增下一条记录准备
@@ -106,9 +116,18 @@ export class MoneyInOutTab implements OnInit {
       this.moneyRecord.money = 0;
       this.moneyRecord.comment = "";
     } else {
-      //TODO 编辑记录完成时，要返回到资金列表页面(注意记录是否刷新)
+      //编辑记录完成时，要返回到资金列表页面
       this.navCtrl.pop();
     }
+  }
+
+  //弹出提示框
+  presentToast(toastMsg: string) {
+    let toast = this.toastCtrl.create({
+      message: toastMsg,
+      duration: 2000
+    });
+    toast.present();
   }
 
   getRecordList() {
@@ -134,4 +153,5 @@ export class MoneyInOutTab implements OnInit {
     alert("金额:" + this.moneyRecord.money + "/n类别:" + this.moneyRecord._alltype + "/n账户" + this.moneyRecord.account
       + "/n时间" + this.moneyRecord.date + "/n备注:" + this.moneyRecord.comment);
   }
+
 }
