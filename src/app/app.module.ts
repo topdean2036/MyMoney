@@ -1,5 +1,4 @@
 import { CustomsettingService } from './../service/customsetting.service';
-import { RecordServiceTest } from './../service/record.service.test';
 import { FormateFromISOPipe } from '../pipes/formateFromISO.pipe';
 import { GlobalService } from './../service/global.service';
 import { AccordionPage } from './../components/accordion-demo/demo-page/accordion';
@@ -55,7 +54,6 @@ import { MultiPickerModule } from 'ion-multi-picker';
   providers: [
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     RecordService,
-    RecordServiceTest,
     DatabaseService,
     GlobalService,
     CustomsettingService,

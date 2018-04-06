@@ -13,8 +13,9 @@ export class DatabaseService {
     try{
       this.db = await this.sqlite.create({ name: this.dbname, location: 'default' });
     }catch(error){
-      alert("error"+error);
-      console.error(error);
+      const msg = JSON.stringify(error);
+      alert("error:" + msg);
+      console.error(msg);
     }
   }
 
@@ -23,8 +24,9 @@ export class DatabaseService {
     try{
       return await this.db.executeSql(querySQL, params);
     }catch(error){
-      alert("error"+error);
-      console.error(error);
+      const msg = JSON.stringify(error);
+      alert("error:" + msg);
+      console.error(msg);
     }    
   }
 }

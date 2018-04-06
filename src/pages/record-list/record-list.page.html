@@ -9,7 +9,7 @@
 <ion-content>
   <ion-list>
     <ion-list-header>
-      查询年份：{{presentYear}}流入：xx 流出：xx 总额：xx
+      查询年份：{{selectedYear}}流入：xx 流出：xx 总额：xx
     </ion-list-header>
     <ion-item no-padding class="accordionItem" *ngFor="let monthRecord of monthArray">
       <div [ngClass]="{'activeTitle':monthRecord.showDetails,'inactiveTitle':!monthRecord.showDetails}" class="accordionTitle"
