@@ -10,11 +10,21 @@ export class DatabaseService {
   constructor(public sqlite: SQLite) { }
 
   async init() {
-    await this.sqlite.create({ name: this.dbname, location: 'default' });
+    try{
+      this.db = await this.sqlite.create({ name: this.dbname, location: 'default' });
+    }catch(error){
+      alert("error"+error);
+      console.error(error);
+    }
   }
 
   async execSql(querySQL: string, params?: any): Promise<any> {
     params = params || [];
-    return await this.db.executeSql(querySQL, params);
+    try{
+      return await this.db.executeSql(querySQL, params);
+    }catch(error){
+      alert("error"+error);
+      console.error(error);
+    }    
   }
 }
