@@ -2,8 +2,6 @@ import { GlobalService } from './global.service';
 import { DatabaseService } from './database.service';
 import { Injectable } from '@angular/core';
 
-import { MoneyRecord } from '../vo/money-record';
-
 @Injectable()
 export class CustomsettingService {
 
@@ -14,7 +12,7 @@ export class CustomsettingService {
   //TODO 获取资金类别。需要做成动态查询
   getRecordTypeColumns(direction: string): any[] {
     let recordTypeColumns: any[];
-    if(direction == "支出"){
+    if (direction == "支出") {
       recordTypeColumns = [
         {
           name: 'type',
@@ -38,7 +36,7 @@ export class CustomsettingService {
         }
 
       ];
-    }else{
+    } else if (direction == "收入") {
       recordTypeColumns = [
         {
           name: 'type',
@@ -55,6 +53,9 @@ export class CustomsettingService {
         }
 
       ];
+    } else {
+      //转账的时候不应该获取资金类别
+      return null;
     }
     return recordTypeColumns;
   }

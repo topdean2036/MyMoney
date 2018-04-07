@@ -3,7 +3,7 @@ import { MoneyTransferTab } from './../edit-record/tabs/moneytransfer.tab';
 import { MoneyInOutTab } from './../edit-record/tabs/moneyinout.tab';
 import { RecordService } from './../../service/record.service';
 import { MoneyRecord } from './../../vo/money-record';
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
 
 import { NavController } from 'ionic-angular';
 
@@ -11,24 +11,21 @@ import { NavController } from 'ionic-angular';
   selector: 'record-list',
   templateUrl: 'record-list.page.html'
 })
-export class RecordListPage implements OnInit {
+export class RecordListPage {
   // selectedRecord: any;
   // dayRecords: any[];
   msg: string;
   //选择查询年份
   selectedYear: string;
   //选择查询月份对应的资金流水
-  selectedMonthRecord: Array<{ date: string, dayRecord: MoneyRecord[] }>;
+  selectedMonthRecord: Array<{ date: string, dayRecord: MoneyRecord[] }> = [];
 
   //月份数据数组
   monthArray: Array<{ month: string, monthTitle: string, showDetails: boolean }> = [];
-  //日数据数组
-  dayArray: Array<{ day: string, moneyRecords: MoneyRecord[] }> = [];
 
-  constructor(public navCtrl: NavController, public recordService: RecordService, public global: GlobalService) {
+  constructor(public navCtrl: NavController, public recordService: RecordService) {
 
   }
-
 
   ngOnInit(): void {
     //获取当前查询年份：
@@ -53,11 +50,26 @@ export class RecordListPage implements OnInit {
     });
   }
 
-  //展开、收回记录列表
-  toggleRecordDetails(selectedMonthRecord) {
-    if (selectedMonthRecord.showDetails) {
+  /**
+   * ionic生命周期事件
+   * 
+   * 重新生成展开月份里面的数据，处理编辑记录后数据不刷新问题
+   */
+  ionViewWillEnter() {
+    //有被选中的月份数据时（有月份列表展开）
+    if (this.selectedMonthRecord.length > 0) {
+      let selectedMonth = this.selectedMonthRecord[0].dayRecord[0].date.substr(5, 2);
+      //根据年份和月份，重新生成月资金列表
       this.selectedMonthRecord = [];
-      selectedMonthRecord.showDetails = false;
+      this.createMonthRecordList(this.selectedYear, selectedMonth);
+    }
+  }
+
+  //展开、收回记录列表
+  toggleRecordDetails(monthItem) {
+    if (monthItem.showDetails) {
+      this.selectedMonthRecord = [];
+      monthItem.showDetails = false;
     } else {
       this.selectedMonthRecord = [];
       //循环月份列表，收回所有流水列表，保证只有一个月份的流水列表处于展开状态
@@ -66,32 +78,52 @@ export class RecordListPage implements OnInit {
         monthRecord.showDetails = false;
       }
 
-      //查询展开月份的资金流水
-      this.recordService.getRecordListByMonth(this.selectedYear + '-' + selectedMonthRecord.month).then(
-        (data) => {
-          let dayMoneyRecords: MoneyRecord[] = [];
-          //重新组织数据
-          if (data.rows.length > 0) {
-            let day: any;
-            for (var i = 0; i < data.rows.length; i++) {
-              let mr = this.global.itemToMoneyRecord(data.rows.item(i));
-              if (data.rows.item(i).day == day) {
-                dayMoneyRecords.push(mr);
-              } else {
-                day = data.rows.item(i).day;
-                dayMoneyRecords = [];
-                dayMoneyRecords.push(mr);
-                this.selectedMonthRecord.push({
-                  date: data.rows.item(i).date,
-                  dayRecord: dayMoneyRecords
-                });
-              }
+      //根据年份和月份，重新生成月资金列表
+      this.createMonthRecordList(this.selectedYear, monthItem.month);
+      //展开列表
+      monthItem.showDetails = true;
+    }
+  }
+
+  /**
+   * 根据年份和月份，重新生成月资金列表
+   * @param year 
+   * @param month 
+   */
+  private createMonthRecordList(year: string, month: string) {
+    //查询展开月份的资金流水
+    this.recordService.getRecordListByMonth(year + '-' + month).then(
+      //重新组织数据，按照日期分组
+      (data) => {
+        let dayMoneyRecords: MoneyRecord[] = [];
+        if (data.length > 0) {
+          //用来分组的日期
+          let day: any;
+          for (var i = 0; i < data.length; i++) {
+            let mr: MoneyRecord = data[i];
+            //获取记录是几号的
+            if (mr.date.substr(8, 2) == day) {
+              dayMoneyRecords.push(mr);
+            } else {
+              day = mr.date.substr(8, 2);
+              dayMoneyRecords = [];
+              dayMoneyRecords.push(mr);
+              this.selectedMonthRecord.push({
+                date: mr.date,
+                dayRecord: dayMoneyRecords
+              });
             }
           }
-        });
-      //展开列表
-      selectedMonthRecord.showDetails = true;
-    }
+        } else {
+          this.selectedMonthRecord = [];
+        }
+      }).catch(error => {
+        this.selectedMonthRecord = [];
+
+        const msg = JSON.stringify(error);
+        alert("error:" + msg);
+        console.error(msg);
+      });
   }
 
   //编辑资金记录
@@ -134,6 +166,6 @@ export class RecordListPage implements OnInit {
     ).catch(error => {
       // this.logtext = JSON.stringify(error)
     }
-      );
+    );
   }
 }

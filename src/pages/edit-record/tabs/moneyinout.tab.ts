@@ -19,10 +19,6 @@ export class MoneyInOutTab implements OnInit {
   //账户下拉列表
   recordAccountColumns: any[] = [];
 
-  rs: MoneyRecord[] = [];
-  //TODO 测试代码，需要删除
-  logtext: string = "显示更新记录";
-
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public modalCtrl: ModalController, public popoverCtrl: PopoverController,
     public recordService: RecordService, public customsettingService: CustomsettingService,
@@ -55,14 +51,17 @@ export class MoneyInOutTab implements OnInit {
     this.recordAccountColumns = this.customsettingService.getRecordAccountColumns();
   }
 
-  //处理切换tab时的逻辑（实际上编译记录时没有切换tab页面的操作）
-  ionViewDidEnter() {
+  /**
+   * ionic生命周期事件
+   * 
+   * 处理切换tab时的逻辑（实际上编译记录时没有切换tab页面的操作）
+   */
+  ionViewWillEnter() {
     //新增记录切换tab页时，重新生成新记录
     if (!this.ifEditRecord) {
-      alert(this.direction);
       //获取资金类别
       this.recordTypeColumns = this.customsettingService.getRecordTypeColumns(this.direction);
-
+      //重新初始化资金记录
       this.recordService.getRecordByDirection(this.direction).then(record => (this.moneyRecord = record));
     }
   }
@@ -84,30 +83,24 @@ export class MoneyInOutTab implements OnInit {
     this.moneyRecord.type = this.moneyRecord._alltype.split(" ")[0];
     this.moneyRecord.subtype = this.moneyRecord._alltype.split(" ")[1];
 
-    //TODO 完成后要弹出提示信息(自动消失那种)，失败时要记录日志
+    //完成后要弹出提示信息(自动消失那种)，失败时要记录日志
     if (this.ifEditRecord) {
-      //TODO 编辑
+      //编辑
       this.recordService.editRecord(this.moneyRecord).then(
-        //TODO
         (data) => {
           this.presentToast("成功");
-          this.logtext = JSON.stringify(data);
         }
       ).catch(error => {
         this.presentToast("失败");
-        this.logtext = JSON.stringify(error)
       });
     } else {
       //新增
       this.recordService.addRecord(this.moneyRecord).then(
-        //TODO
         (data) => {
           this.presentToast("成功");
-          this.logtext = JSON.stringify(data);
         }
       ).catch(error => {
         this.presentToast("失败");
-        this.logtext = JSON.stringify(error);
       });
     }
 
@@ -129,29 +122,4 @@ export class MoneyInOutTab implements OnInit {
     });
     toast.present();
   }
-
-  getRecordList() {
-    // this.rs = this.recordService.getRecordList();
-
-    this.recordService.getRecordListAll().then(
-      (data) => {
-        this.rs = data;
-        // this.logtext = JSON.stringify(this.rs);
-        this.logtext = JSON.stringify(data[0]);
-      }
-    ).catch(error => this.logtext = JSON.stringify(error));
-
-    // if (this.rs.length > 0) {
-    //     for (let mr of this.rs) {
-    //         console.log("金额:" + mr.money + ";类别:" + mr.subtype + " " + mr.type + ";账户" + mr.account
-    //             + ";时间" + mr.date + ";备注:" + mr.comment);
-    //     }
-    // }
-  }
-
-  alertValue() {
-    alert("金额:" + this.moneyRecord.money + "/n类别:" + this.moneyRecord._alltype + "/n账户" + this.moneyRecord.account
-      + "/n时间" + this.moneyRecord.date + "/n备注:" + this.moneyRecord.comment);
-  }
-
 }

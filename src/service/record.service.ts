@@ -37,8 +37,8 @@ export class RecordService {
   editRecord(moneyRecord: MoneyRecord): Promise<any> {
     let sql = "UPDATE money_record SET direction = ?,money = ?,type = ?,subtype = ?,account = ?,date = ?,comment = ? WHERE id = ?";
     let params = [moneyRecord.direction, moneyRecord.money, moneyRecord.type,
-      moneyRecord.subtype, moneyRecord.account, moneyRecord.date, moneyRecord.comment,
-      moneyRecord.id];
+    moneyRecord.subtype, moneyRecord.account, moneyRecord.date, moneyRecord.comment,
+    moneyRecord.id];
 
     return this.dbService.execSql(sql, params);
   }
@@ -50,7 +50,7 @@ export class RecordService {
   }
 
   //需要合计月份的流入、流出
-  getRecordListMonthSum(year: string): Promise<any>{
+  getRecordListMonthSum(year: string): Promise<any> {
     let moneyInSql = "SUM(CASE direction WHEN '收入' THEN money ELSE 0 END) AS moneyIn, ";
     let moneyOutSql = "SUM(CASE direction WHEN '支出' THEN money ELSE 0 END) AS moneyOut ";
 
@@ -61,26 +61,67 @@ export class RecordService {
     return this.dbService.execSql(sql, params);
   }
 
-  //根据年月查询资金流水
-  getRecordListByMonth(yearmonth: string): Promise<any>{
-    let sql = "SELECT id,direction,money,type,subtype,account,date,comment,SUBSTR(date,9,2) as day FROM money_record WHERE date LIKE '" + yearmonth + "%'";
+  /**
+   * 根据年月查询资金流水
+   * @param yearmonth 
+   */
+  async getRecordListByMonth(yearmonth: string): Promise<MoneyRecord[]> {
+    let rsArray: MoneyRecord[] = [];
+
+    let sql = "SELECT id,direction,money,type,subtype,account,date,comment,SUBSTR(date,9,2) as day FROM money_record WHERE date LIKE '" + yearmonth + "%' order by date desc";
     let params = [];
-    return this.dbService.execSql(sql, params);
+
+    try {
+      //数据库查询结果
+      let rs = await this.dbService.execSql(sql, params);
+
+      //把结果放到MoneyRecord数组里面
+      if (rs.rows.length > 0) {
+        for (var i = 0; i < rs.rows.length; i++) {
+          rsArray.push(this.itemToMoneyRecord(rs.rows.item(i)));
+        }
+      }
+    } catch (error) {
+      const msg = JSON.stringify(error);
+      alert("error:" + msg);
+      console.error(msg);
+    }
+
+    return rsArray;
+  }
+
+  /**
+   * 把sql查询结果放入资金记录对象
+   * @param item 
+   */
+  itemToMoneyRecord(item: any): MoneyRecord {
+    let mr = new MoneyRecord();
+    mr.id = item.id;
+    mr.direction = item.direction;
+    mr.money = item.money;
+    mr.type = item.type;
+    mr.subtype = item.subtype;
+    mr.account = item.account;
+    mr.date = item.date;
+    mr.comment = item.comment;
+    mr._alltype = mr.type + " " + mr.subtype;
+
+    return mr;
   }
 
   getRecordListAll(): Promise<MoneyRecord[]> {
-      let sql = "SELECT * FROM money_record ORDER BY id DESC";
-      let rs: MoneyRecord[] = [];
+    let sql = "SELECT * FROM money_record ORDER BY id DESC";
+    let rs: MoneyRecord[] = [];
 
-      return this.dbService.execSql(sql).then((data) => {
-          if (data.rows.length > 0) {
-              for (var i = 0; i < data.rows.length; i++) {
-                  let mr = this.global.itemToMoneyRecord(data.rows.item(i));
-                  rs.push(mr);
-              }
-          }
-          return rs;
-      });
+    return this.dbService.execSql(sql).then((data) => {
+      if (data.rows.length > 0) {
+        for (var i = 0; i < data.rows.length; i++) {
+          let mr = this.itemToMoneyRecord(data.rows.item(i));
+          rs.push(mr);
+        }
+      }
+      return rs;
+    });
   }
 
   getRecordList(): Promise<any[]> {

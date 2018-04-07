@@ -11,12 +11,12 @@
     <ion-list-header>
       查询年份：{{selectedYear}}流入：xx 流出：xx 总额：xx
     </ion-list-header>
-    <ion-item no-padding class="accordionItem" *ngFor="let monthRecord of monthArray">
-      <div [ngClass]="{'activeTitle':monthRecord.showDetails,'inactiveTitle':!monthRecord.showDetails}" class="accordionTitle"
-        (click)="toggleRecordDetails(monthRecord)">
-        {{monthRecord.monthTitle}}
+    <ion-item no-padding class="accordionItem" *ngFor="let monthItem of monthArray">
+      <div [ngClass]="{'activeTitle':monthItem.showDetails,'inactiveTitle':!monthItem.showDetails}" class="accordionTitle"
+        (click)="toggleRecordDetails(monthItem)">
+        {{monthItem.monthTitle}}
       </div>
-      <div class="accordionDetail" *ngIf="monthRecord.showDetails">
+      <div class="accordionDetail" *ngIf="monthItem.showDetails">
         <ion-grid no-padding>
           <ion-row *ngFor="let dayRecord of selectedMonthRecord">
             <ion-col no-padding col-1 class="dateColumn">

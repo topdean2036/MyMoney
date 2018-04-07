@@ -1,4 +1,3 @@
-import { MoneyRecord } from './../vo/money-record';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -23,21 +22,4 @@ export class GlobalService {
     }
     return result;
   }
-
-  /**把sql查询结果放入资金记录对象 */
-  itemToMoneyRecord(item: any): MoneyRecord {
-    let mr = new MoneyRecord();
-    mr.id = item.id;
-    mr.direction = item.direction;
-    mr.money = item.money;
-    mr.type = item.type;
-    mr.subtype = item.subtype;
-    mr.account = item.account;
-    mr.date = item.date;
-    mr.comment = item.comment;
-    mr._alltype = mr.type + " " + mr.subtype;
-
-    return mr;
-  }
-
 }
