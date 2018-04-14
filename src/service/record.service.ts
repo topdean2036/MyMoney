@@ -1,7 +1,7 @@
 import { GlobalService } from './global.service';
 import { DatabaseService } from './database.service';
 import { Injectable } from '@angular/core';
-
+import { RecordDirection } from './../constant/record';
 import { MoneyRecord } from '../vo/money-record';
 
 @Injectable()
@@ -124,80 +124,6 @@ export class RecordService {
     });
   }
 
-  getRecordList(): Promise<any[]> {
-
-    let resultList: any[] = [];
-
-    let dayRecordList3: MoneyRecord[] = [];
-    let dayRecordList2: MoneyRecord[] = [];
-    let dayRecordList1: MoneyRecord[] = [];
-
-    let date = new Date();
-    date.setDate(3);
-    date.setHours(17);
-    let moneyRecord31 = this.getRecordVO(3, this.global.toDateString(date));
-    dayRecordList3.push(moneyRecord31);
-
-    date = new Date();
-    date.setDate(3);
-    date.setHours(16);
-    let moneyRecord32 = this.getRecordVO(3.2, this.global.toChinaISOString(date));
-    dayRecordList3.push(moneyRecord32);
-
-    date = new Date();
-    date.setDate(3);
-    date.setHours(15);
-    let moneyRecord33 = this.getRecordVO(3.3, this.global.toChinaISOString(date));
-    dayRecordList3.push(moneyRecord33);
-
-    date = new Date();
-    date.setDate(2);
-    date.setHours(14);
-    let moneyRecord21 = this.getRecordVO(2, this.global.toChinaISOString(date));
-    dayRecordList2.push(moneyRecord21);
-
-    date = new Date();
-    date.setDate(2);
-    date.setHours(13);
-    let moneyRecord22 = this.getRecordVO(2.2, this.global.toChinaISOString(date));
-    dayRecordList2.push(moneyRecord22);
-
-    date = new Date();
-    date.setDate(2);
-    date.setHours(12);
-    let moneyRecord23 = this.getRecordVO(2.3, this.global.toChinaISOString(date));
-    dayRecordList2.push(moneyRecord23);
-
-    date = new Date();
-    date.setDate(1);
-    date.setHours(11);
-    let moneyRecord11 = this.getRecordVO(1, this.global.toChinaISOString(date));
-    dayRecordList1.push(moneyRecord11);
-
-    date = new Date();
-    date.setDate(1);
-    date.setHours(10);
-    let moneyRecord12 = this.getRecordVO(1.2, this.global.toChinaISOString(date));
-    dayRecordList1.push(moneyRecord12);
-
-    resultList.push(dayRecordList3);
-    resultList.push(dayRecordList2);
-    resultList.push(dayRecordList1);
-
-    return Promise.resolve(resultList);
-  }
-
-  getRecord(): Promise<MoneyRecord> {
-    let moneyRecord = new MoneyRecord();
-    moneyRecord.money = 101;
-    moneyRecord._alltype = "食品酒水 水果零食";
-    moneyRecord.direction = '支出';
-    moneyRecord.account = '建设银行';
-    moneyRecord.date = this.global.toChinaISOString(new Date());
-    moneyRecord.comment = "我的备注";
-    return Promise.resolve(moneyRecord);
-  }
-
   getRecordByDirection(direction: string): Promise<MoneyRecord> {
     let moneyRecord = new MoneyRecord();
     moneyRecord.money = 0;
@@ -211,14 +137,14 @@ export class RecordService {
     return Promise.resolve(moneyRecord);
   }
 
-  //TODO 根据资金方向活期默认类型
+  //TODO 根据资金方向获取默认类型
   getDefultAlltype(direction: string): Promise<string> {
     let alltype: string;
     switch (direction) {
-      case "收入":
+      case RecordDirection.In:
         alltype = "职业收入 工资收入";
         break;
-      case "支出":
+      case RecordDirection.Out:
         alltype = "食品酒水 水果零食";
         break;
       default:
@@ -234,23 +160,23 @@ export class RecordService {
     return Promise.resolve(account);
   }
 
-  getRecordVO(money: number, date: string): MoneyRecord {
-    let moneyRecord = new MoneyRecord();
-    moneyRecord.id = 1;
-    moneyRecord.money = money;
-    moneyRecord._alltype = "食品酒水 水果零食";
-    moneyRecord.type = "食品酒水";
-    moneyRecord.subtype = "水果零食";
-    moneyRecord.direction = '支出';
-    moneyRecord.account = '建设银行';
-    // if (date == null) {
-    //   alert('date'+date);
-    //   moneyRecord.date = this.global.toChinaISOString(new Date());
-    // } else {
-    moneyRecord.date = date;
-    // }
+  // getRecordVO(money: number, date: string): MoneyRecord {
+  //   let moneyRecord = new MoneyRecord();
+  //   moneyRecord.id = 1;
+  //   moneyRecord.money = money;
+  //   moneyRecord._alltype = "食品酒水 水果零食";
+  //   moneyRecord.type = "食品酒水";
+  //   moneyRecord.subtype = "水果零食";
+  //   moneyRecord.direction = '支出';
+  //   moneyRecord.account = '建设银行';
+  //   // if (date == null) {
+  //   //   alert('date'+date);
+  //   //   moneyRecord.date = this.global.toChinaISOString(new Date());
+  //   // } else {
+  //   moneyRecord.date = date;
+  //   // }
 
-    moneyRecord.comment = "我的备注";
-    return moneyRecord;
-  }
+  //   moneyRecord.comment = "我的备注";
+  //   return moneyRecord;
+  // }
 }

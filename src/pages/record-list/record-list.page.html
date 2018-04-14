@@ -35,7 +35,7 @@
                   <ion-item class="lPadingCloser" (click)="recordTapped($event, moneyRecord)">
                     <ion-icon name="beer" item-left></ion-icon>
                     <ion-label>{{moneyRecord.subtype}}</ion-label>
-                    <div item-right [ngClass]="{'inMoneyColor':moneyRecord.direction=='收入','outMoneyColor':moneyRecord.direction=='支出'}">
+                    <div item-right [ngClass]="moneyColorClass">
                       ¥{{moneyRecord.money}}
                     </div>
                   </ion-item>

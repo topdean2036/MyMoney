@@ -49,10 +49,12 @@ export class MyApp {
       //StatusBar.styleDefault();
       //Splashscreen.hide();
 
-      //初始化数据库、资金记录表
+      //初始化数据库
       await this.dbService.init();
       //初始化资金记录表
       await this.recordService.initMoneyRecord();
+      //初始化账户表
+      
     } catch (error) {
       console.log(error);
       return;

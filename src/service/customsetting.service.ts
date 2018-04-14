@@ -1,5 +1,7 @@
 import { GlobalService } from './global.service';
 import { DatabaseService } from './database.service';
+import { RecordDirection } from './../constant/record';
+
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -12,50 +14,55 @@ export class CustomsettingService {
   //TODO 获取资金类别。需要做成动态查询
   getRecordTypeColumns(direction: string): any[] {
     let recordTypeColumns: any[];
-    if (direction == "支出") {
-      recordTypeColumns = [
-        {
-          name: 'type',
-          options: [
-            { text: '食品酒水', value: '食品酒水' },
-            { text: '服饰美容', value: '服饰美容' }
-          ]
-        },
-        {
-          name: 'subtype',
-          options: [
-            { text: '早午晚餐', value: '早午晚餐', parentVal: '食品酒水' },
-            { text: '水果零食', value: '水果零食', parentVal: '食品酒水' },
-            { text: '烟酒茶', value: '烟酒茶', parentVal: '食品酒水' },
-            { text: '衣服裤子', value: '衣服裤子', parentVal: '服饰美容' },
-            { text: '鞋帽包包', value: '鞋帽包包', parentVal: '服饰美容' },
-            { text: '化妆饰品', value: '化妆饰品', parentVal: '服饰美容' },
-            { text: '美容美发', value: '美容美发', parentVal: '服饰美容' },
-            { text: 'aaaaaa', value: 'aaaaaa', parentVal: '服饰美容' }
-          ]
-        }
+    switch (direction) {
+      case RecordDirection.Out:
+        recordTypeColumns = [
+          {
+            name: 'type',
+            options: [
+              { text: '食品酒水', value: '食品酒水' },
+              { text: '服饰美容', value: '服饰美容' }
+            ]
+          },
+          {
+            name: 'subtype',
+            options: [
+              { text: '早午晚餐', value: '早午晚餐', parentVal: '食品酒水' },
+              { text: '水果零食', value: '水果零食', parentVal: '食品酒水' },
+              { text: '烟酒茶', value: '烟酒茶', parentVal: '食品酒水' },
+              { text: '衣服裤子', value: '衣服裤子', parentVal: '服饰美容' },
+              { text: '鞋帽包包', value: '鞋帽包包', parentVal: '服饰美容' },
+              { text: '化妆饰品', value: '化妆饰品', parentVal: '服饰美容' },
+              { text: '美容美发', value: '美容美发', parentVal: '服饰美容' },
+              { text: 'aaaaaa', value: 'aaaaaa', parentVal: '服饰美容' }
+            ]
+          }
 
-      ];
-    } else if (direction == "收入") {
-      recordTypeColumns = [
-        {
-          name: 'type',
-          options: [
-            { text: '职业收入', value: '职业收入' }
-          ]
-        },
-        {
-          name: 'subtype',
-          options: [
-            { text: '工资收入', value: '工资收入', parentVal: '职业收入' },
-            { text: '奖金', value: '奖金', parentVal: '职业收入' }
-          ]
-        }
+        ];
+        break;
 
-      ];
-    } else {
-      //转账的时候不应该获取资金类别
-      return null;
+      case RecordDirection.In:
+        recordTypeColumns = [
+          {
+            name: 'type',
+            options: [
+              { text: '职业收入', value: '职业收入' }
+            ]
+          },
+          {
+            name: 'subtype',
+            options: [
+              { text: '工资收入', value: '工资收入', parentVal: '职业收入' },
+              { text: '奖金', value: '奖金', parentVal: '职业收入' }
+            ]
+          }
+
+        ];
+        break;
+
+      default:
+        //转账的时候不应该获取资金类别
+        return null;
     }
     return recordTypeColumns;
   }

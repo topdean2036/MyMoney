@@ -3,6 +3,8 @@ import { MoneyTransferTab } from './../edit-record/tabs/moneytransfer.tab';
 import { MoneyInOutTab } from './../edit-record/tabs/moneyinout.tab';
 import { RecordService } from './../../service/record.service';
 import { MoneyRecord } from './../../vo/money-record';
+import { RecordDirection } from './../../constant/record';
+
 import { Component } from '@angular/core';
 
 import { NavController, ToastController } from 'ionic-angular';
@@ -14,6 +16,10 @@ import { NavController, ToastController } from 'ionic-angular';
 export class RecordListPage {
   // selectedRecord: any;
   // dayRecords: any[];
+
+  //资金记录颜色样式：根据资金方向是收入、支出来判断
+  moneyColorClass = " {'inMoneyColor':moneyRecord.direction=='收入','outMoneyColor':moneyRecord.direction=='支出'}";
+
   //选择查询年份
   selectedYear: string;
   //选择查询月份对应的资金流水
@@ -134,19 +140,19 @@ export class RecordListPage {
   recordTapped(event, moneyRecord: MoneyRecord) {
     let direction = moneyRecord.direction;
     switch (direction) {
-      case "支出":
+      case RecordDirection.Out:
         this.navCtrl.push(MoneyInOutTab, {
           moneyRecord: moneyRecord,
           direction: direction
         });
         break;
-      case "收入":
+      case RecordDirection.In:
         this.navCtrl.push(MoneyInOutTab, {
           moneyRecord: moneyRecord,
           direction: direction
         });
         break;
-      case "转账":
+      case RecordDirection.Transfer:
         this.navCtrl.push(MoneyTransferTab, {
           moneyRecord: moneyRecord
         });
@@ -169,7 +175,7 @@ export class RecordListPage {
       }
     ).catch(error => {
       this.global.presentToast("失败", this.toastCtrl);
-      
+
       const msg = JSON.stringify(error);
       alert("error:" + msg);
       console.error(msg);

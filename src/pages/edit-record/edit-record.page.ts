@@ -1,5 +1,6 @@
 import { RecordService } from './../../service/record.service';
 import { MoneyRecord } from './../../vo/money-record';
+import { RecordDirection } from './../../constant/record';
 
 import { Component, ViewChild } from '@angular/core';
 import { NavController, Tabs } from 'ionic-angular';
@@ -18,7 +19,9 @@ export class EditRecordPage {
 
   moneyRecord: MoneyRecord;
 
-  tabParam: any;
+  tabParamIn: any = { direction: RecordDirection.In };
+  tabParamOut: any = { direction: RecordDirection.Out };
+  tabParamTransfer: any = { direction: RecordDirection.Transfer };
 
   @ViewChild('editRecordTabs') editRecordTabs: Tabs;
 
