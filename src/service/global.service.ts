@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastController } from 'ionic-angular';
 
 @Injectable()
 export class GlobalService {
@@ -21,5 +22,18 @@ export class GlobalService {
       result = '' + num;
     }
     return result;
+  }
+
+  /**
+   * 弹出提示框，2秒后消失
+   * @param toastMsg 
+   * @param toastCtrl 
+   */
+  presentToast(toastMsg: string, toastCtrl: ToastController) {
+    let toast = toastCtrl.create({
+      message: toastMsg,
+      duration: 2000
+    });
+    toast.present();
   }
 }

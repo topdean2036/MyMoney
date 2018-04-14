@@ -94,7 +94,7 @@ export class RecordService {
    * 把sql查询结果放入资金记录对象
    * @param item 
    */
-  itemToMoneyRecord(item: any): MoneyRecord {
+  private itemToMoneyRecord(item: any): MoneyRecord {
     let mr = new MoneyRecord();
     mr.id = item.id;
     mr.direction = item.direction;

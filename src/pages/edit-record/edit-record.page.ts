@@ -1,8 +1,8 @@
 import { RecordService } from './../../service/record.service';
 import { MoneyRecord } from './../../vo/money-record';
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController, NavParams, Tabs } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, Tabs } from 'ionic-angular';
 
 import { MoneyTransferTab } from './tabs/moneytransfer.tab';
 import { MoneyInOutTab } from './tabs/moneyinout.tab';
@@ -10,7 +10,7 @@ import { MoneyInOutTab } from './tabs/moneyinout.tab';
 @Component({
   templateUrl: 'edit-record.page.html'
 })
-export class EditRecordPage implements OnInit {
+export class EditRecordPage {
 
   tabInRoot: any;
   tabOutRoot: any;

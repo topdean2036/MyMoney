@@ -2,13 +2,15 @@ import { CustomsettingService } from '../../../service/customsetting.service';
 import { EditMoneyPopover } from './../popover/edit-money.popover';
 import { RecordService } from './../../../service/record.service';
 import { MoneyRecord } from './../../../vo/money-record';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController, NavParams, ModalController, PopoverController, ToastController } from 'ionic-angular';
+
+import { GlobalService } from '../../../service/global.service';
 
 @Component({
   templateUrl: 'moneyinout.tab.html'
 })
-export class MoneyInOutTab implements OnInit {
+export class MoneyInOutTab {
   moneyRecord: MoneyRecord;
   //是否编辑
   ifEditRecord: boolean;
@@ -22,7 +24,7 @@ export class MoneyInOutTab implements OnInit {
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public modalCtrl: ModalController, public popoverCtrl: PopoverController,
     public recordService: RecordService, public customsettingService: CustomsettingService,
-    public toastCtrl: ToastController) {
+    public toastCtrl: ToastController, public global: GlobalService) {
     //如果是编译记录，会获取到资金记录，新增记录时不会有
     this.moneyRecord = navParams.get('moneyRecord');
     // alert(JSON.stringify(navParams.get('moneyRecord')));
@@ -88,23 +90,31 @@ export class MoneyInOutTab implements OnInit {
       //编辑
       this.recordService.editRecord(this.moneyRecord).then(
         (data) => {
-          this.presentToast("成功");
+          this.global.presentToast("成功", this.toastCtrl);
         }
       ).catch(error => {
-        this.presentToast("失败");
+        this.global.presentToast("失败", this.toastCtrl);
+
+        const msg = JSON.stringify(error);
+        alert("error:" + msg);
+        console.error(msg);
       });
     } else {
       //新增
       this.recordService.addRecord(this.moneyRecord).then(
         (data) => {
-          this.presentToast("成功");
+          this.global.presentToast("成功", this.toastCtrl);
         }
       ).catch(error => {
-        this.presentToast("失败");
+        this.global.presentToast("失败", this.toastCtrl);
+
+        const msg = JSON.stringify(error);
+        alert("error:" + msg);
+        console.error(msg);
       });
     }
 
-    //新增记录完成时，刷新金额、备注字段，为新增下一条记录准备
+    //新增记录完成时，重置金额、备注字段，为新增下一条记录准备
     if (!this.ifEditRecord) {
       this.moneyRecord.money = 0;
       this.moneyRecord.comment = "";
@@ -112,14 +122,5 @@ export class MoneyInOutTab implements OnInit {
       //编辑记录完成时，要返回到资金列表页面
       this.navCtrl.pop();
     }
-  }
-
-  //弹出提示框
-  presentToast(toastMsg: string) {
-    let toast = this.toastCtrl.create({
-      message: toastMsg,
-      duration: 2000
-    });
-    toast.present();
   }
 }

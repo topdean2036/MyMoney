@@ -3,9 +3,9 @@ import { MoneyTransferTab } from './../edit-record/tabs/moneytransfer.tab';
 import { MoneyInOutTab } from './../edit-record/tabs/moneyinout.tab';
 import { RecordService } from './../../service/record.service';
 import { MoneyRecord } from './../../vo/money-record';
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 
-import { NavController } from 'ionic-angular';
+import { NavController, ToastController } from 'ionic-angular';
 
 @Component({
   selector: 'record-list',
@@ -14,7 +14,6 @@ import { NavController } from 'ionic-angular';
 export class RecordListPage {
   // selectedRecord: any;
   // dayRecords: any[];
-  msg: string;
   //选择查询年份
   selectedYear: string;
   //选择查询月份对应的资金流水
@@ -23,7 +22,7 @@ export class RecordListPage {
   //月份数据数组
   monthArray: Array<{ month: string, monthTitle: string, showDetails: boolean }> = [];
 
-  constructor(public navCtrl: NavController, public recordService: RecordService) {
+  constructor(public navCtrl: NavController, public recordService: RecordService, public toastCtrl: ToastController, public global: GlobalService) {
 
   }
 
@@ -45,8 +44,9 @@ export class RecordListPage {
         }
       }
     ).catch(error => {
-      this.msg = JSON.stringify(error);
-      alert("error:" + this.msg);
+      let msg = JSON.stringify(error);
+      alert("error:" + msg);
+      console.error(msg);
     });
   }
 
@@ -126,11 +126,12 @@ export class RecordListPage {
       });
   }
 
-  //编辑资金记录
+  /**
+   * 编辑资金记录.根据资金方向调整到相应页面
+   * @param event 
+   * @param moneyRecord 
+   */
   recordTapped(event, moneyRecord: MoneyRecord) {
-    // this.navCtrl.push(EditRecordPage, {
-    //   moneyRecord: moneyRecord
-    // });
     let direction = moneyRecord.direction;
     switch (direction) {
       case "支出":
@@ -153,18 +154,25 @@ export class RecordListPage {
     }
   }
 
-  //TODO 数据库操作执行完成后，给出提示信息
+  /**
+   * 删除记录.数据库操作执行完成后，给出提示信息
+   * @param index 
+   * @param dayRecords 
+   */
   deleteRecord(index, dayRecords: MoneyRecord[]) {
-    alert(index);
     //数据库删除
     this.recordService.delRecord(dayRecords[index].id).then(
       (data) => {
-        // this.logtext = JSON.stringify(data);
         //删除前台界面记录
         dayRecords.splice(index, 1);
+        this.global.presentToast("成功", this.toastCtrl);
       }
     ).catch(error => {
-      // this.logtext = JSON.stringify(error)
+      this.global.presentToast("失败", this.toastCtrl);
+      
+      const msg = JSON.stringify(error);
+      alert("error:" + msg);
+      console.error(msg);
     }
     );
   }
