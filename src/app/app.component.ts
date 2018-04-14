@@ -1,10 +1,12 @@
+import { Component, ViewChild } from '@angular/core';
+import { Platform, MenuController, Nav } from 'ionic-angular';
+
+import { DatabaseService } from './../service/database.service';
 import { RecordService } from './../service/record.service';
+import { AccountService } from './../service/account.service';
+
 import { AccordionPage } from './../components/accordion-demo/demo-page/accordion';
 import { RecordListPage } from './../pages/record-list/record-list.page';
-import { DatabaseService } from './../service/database.service';
-import { Component, ViewChild } from '@angular/core';
-
-import { Platform, MenuController, Nav } from 'ionic-angular';
 
 //import { StatusBar} from '@ionic-native/status-bar';
 //import { Splashscreen } from '@ionic-native/splash-screen';
@@ -25,7 +27,7 @@ export class MyApp {
   pages: Array<{ title: string, component: any }>;
 
   constructor(public platform: Platform, public menu: MenuController, public dbService: DatabaseService,
-    public recordService: RecordService) {
+    public recordService: RecordService, public accountService: AccountService) {
     this.initializeApp();
     // set our app's pages
     this.pages = [
@@ -54,7 +56,7 @@ export class MyApp {
       //初始化资金记录表
       await this.recordService.initMoneyRecord();
       //初始化账户表
-      
+      await this.accountService.initAccount();
     } catch (error) {
       console.log(error);
       return;

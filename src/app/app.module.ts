@@ -5,6 +5,8 @@ import { AccordionPage } from './../components/accordion-demo/demo-page/accordio
 import { RecordListPage } from './../pages/record-list/record-list.page';
 import { DatabaseService } from './../service/database.service';
 import { RecordService } from './../service/record.service';
+import { AccountService } from './../service/account.service';
+
 import { NgModule, ErrorHandler, Pipe } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
@@ -53,11 +55,12 @@ import { MultiPickerModule } from 'ion-multi-picker';
   ],
   providers: [
     { provide: ErrorHandler, useClass: IonicErrorHandler },
-    RecordService,
+    SQLite,
     DatabaseService,
+    RecordService,
+    AccountService,
     GlobalService,
-    CustomsettingService,
-    SQLite
+    CustomsettingService
   ]
 })
 export class AppModule { }

@@ -78,7 +78,7 @@ export class RecordService {
       //把结果放到MoneyRecord数组里面
       if (rs.rows.length > 0) {
         for (var i = 0; i < rs.rows.length; i++) {
-          rsArray.push(this.itemToMoneyRecord(rs.rows.item(i)));
+          rsArray.push(this.itemToBean(rs.rows.item(i)));
         }
       }
     } catch (error) {
@@ -94,7 +94,7 @@ export class RecordService {
    * 把sql查询结果放入资金记录对象
    * @param item 
    */
-  private itemToMoneyRecord(item: any): MoneyRecord {
+  private itemToBean(item: any): MoneyRecord {
     let mr = new MoneyRecord();
     mr.id = item.id;
     mr.direction = item.direction;
@@ -116,7 +116,7 @@ export class RecordService {
     return this.dbService.execSql(sql).then((data) => {
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
-          let mr = this.itemToMoneyRecord(data.rows.item(i));
+          let mr = this.itemToBean(data.rows.item(i));
           rs.push(mr);
         }
       }

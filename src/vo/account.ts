@@ -10,7 +10,7 @@ export class Account {
     /**
      * 是否默认类型
      */
-    isDefault: boolean;
+    isdefault: number;
     /**
      * 账户类型
      */
@@ -18,10 +18,10 @@ export class Account {
     /**
      * 账户子类型
      */
-    subType: string;
+    subtype: string;
     /**
      * 币种
      */
-    currencyType: string;
+    currencytype: string;
 
 }
